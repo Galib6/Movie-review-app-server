@@ -2,6 +2,7 @@ const express = require("express");
 require("express-async-errors")
 const morgan = require("morgan");
 const { errorHandler } = require("./middlewares/error");
+const cors = require("cors")
 require("dotenv").config()
 require("./db/index")
 const userRouter = require("./routes/user")
@@ -12,9 +13,14 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 app.use("/api/user", userRouter);
-
+app.use(cors())
 app.use(errorHandler)
 
+
+
+app.get("/", (req, res) => {
+    res.send({ Ok: "server running" })
+})
 
 app.post("/sign-in",
     (req, res, next) => {
