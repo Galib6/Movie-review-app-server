@@ -1,21 +1,23 @@
+const cors = require("cors")
 const express = require("express");
 require("express-async-errors")
 const morgan = require("morgan");
 const { errorHandler } = require("./middlewares/error");
-const cors = require("cors")
 require("dotenv").config()
 require("./db/index")
 const userRouter = require("./routes/user")
-
-
+//Middlewire------>
 const app = express();
 app.use(express.json());
 app.use(morgan("dev"));
-
-app.use("/api/user", userRouter);
 app.use(cors())
-app.use(errorHandler)
 
+
+//routes-------->
+app.use("/api/user", userRouter);
+
+
+app.use(errorHandler)
 
 
 app.get("/", (req, res) => {
