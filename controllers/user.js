@@ -119,8 +119,22 @@ exports.verifyEmail = async (req, res) => {
         
         `
     })
+    const jwtToken =
+        jwt.sign(
+            { userId: user._id },
+            process.env.JWT_SECRET
+        );
 
-    res.json({ messege: "Your email is now constified, Thanks for choosing us" })
+    res.json({
+        user:
+        {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            token: jwtToken
+        },
+        messege: "Your email is now verified!"
+    })
 
 
 }
@@ -186,7 +200,7 @@ exports.resendEmailVerificationToken = async (req, res) => {
 exports.forgetPassword = async (req, res) => {
     const { email } = req.body;
 
-    if (!email) return sendError(res, "email is missing");
+    if (!email) return sendError(res, "Email is missing");
 
     const user = await User.findOne({ email })
 
@@ -194,14 +208,14 @@ exports.forgetPassword = async (req, res) => {
 
     const alreadyhadToken = await PasswordResetToken.findOne({ owner: user._id })
 
-    if (alreadyhadToken) return sendError(res, "only after one hour you can request for another token!")
+    if (alreadyhadToken) return sendError(res, "Only after one hour you can request for another token!")
 
     const token = await genarateRandomByte();
     const newPasswordResetToken = await PasswordResetToken({ owner: user._id, token })
 
     await newPasswordResetToken.save();
 
-    const resetPasswordUrl = `http:localhost:3000/reset-password?token=${token}&id=${user._id}`;
+    const resetPasswordUrl = `http:localhost:3000/auth/reset-password?token=${token}&id=${user._id}`;
 
     const transport = generateMailTransporter
 
