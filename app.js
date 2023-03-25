@@ -6,6 +6,7 @@ const { errorHandler } = require("./middlewares/error");
 require("dotenv").config()
 require("./db/index")
 const userRouter = require("./routes/user");
+const actorRouter = require("./routes/actor");
 const { handleNotFound } = require("./utils/helper");
 
 //Middlewire------>
@@ -17,6 +18,7 @@ app.use(cors())
 
 //routes-------->
 app.use("/api/user", userRouter);
+app.use("/api/actor", actorRouter);
 
 app.use("/*", handleNotFound)
 
